@@ -83,4 +83,9 @@ const isSellerOrAdmin =async (req, res, next) => {
     res.status(401).send({ message: 'Invalid Admin/Seller Token' });
   }
 };
+
+// const endSession = async(req, res, next) =>{
+//     req.user = '' ; 
+//     next();
+// };
 module.exports = { generateToken, isAuth, isAdmin, isSeller, isSellerOrAdmin };
