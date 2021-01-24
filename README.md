@@ -34,39 +34,42 @@ In this website there are three types of user: Admin, Seller and Buyer. The Admi
 
 ## Installations and Setup
 
-1. Install `Node.js` and `npm` on your local machine.
+### Running Locally
 
-2. Clone or Download the repository
+
+* Make sure that `Node.js` and `npm` are installed on your local machine.
+
+1. Clone or Download the repository
 
 ```
 git clone 
 ```
 
-3. Start the server
+2. Start the server
 
 ```
 npm init -y
 ```
 
-4. Start MongoDB
+3. Start MongoDB
 
 ```
 sudo service mongod start
 ```
 
-5. Install Dependencies 
+4. Install Dependencies 
 
 ```
 npm install 
 ```
 
-6. Start the application
+5. Start the application
 
 ```
 npm start base-64 bcryptjs dotenv express jsonwebtoken mongoose
 ```
 
-7. In your `.env` file, add the following 
+6. In your `.env` file, add the following 
 
 ```
 PORT
@@ -74,7 +77,37 @@ MONGODB_URL=mongodb://localhost/DB_Name
 SECRET
 ```
 
-Your app should now be running on `http://localhost:3000`.
+Your app should now be running on [http://localhost:3000](http://localhost:3000).
+
+
+### Deploying to Heroku
+
+* Make sure that [Heroku Toolbelt](https://devcenter.heroku.com/articles/heroku-cli) is installed on your local machine.
+
+1. Go to [Heroku.com](https://www.heroku.com/)
+
+
+2. Sign up then Sign in
+
+3. Create new app form your heroku dashboard -> from `New`
+
+4. Choose app name and region then `Create app`
+
+5. Under `Resources` in the **Add-ons** choose `ObjectRocket for MongoDB`
+
+And under `Settings` in **Config Vars** -> *Reveal Config Vars* add the variables that are in the `.env` and their values 
+
+6. Deploy your app from your GitHub repo -> under `deployment` choose `GitHub` -> `connect to GitHub`
+
+7. Choose the repo you want to connect (make sure everything is merged to main)
+
+8. Click on `Connect`
+
+9. `Enable Automatic Deploys` then `Deploy Branch`
+
+10. Click on `View` to see the live deployemnt. 
+The URL will look like the following: 
+[https://your-app-name.herokuapp.com/](https://your-app-name.herokuapp.com/)
 
 
 
@@ -119,10 +152,12 @@ Now, you can assign the `App ID` to `facebookClientID`, and App Secret to `faceb
 ##### The Callback URL
 
 - It can point back to your localhost
-[](http://localhost:3000/oauth)
+
+   [http://localhost:3000/oauth](http://localhost:3000/oauth)
 
 - When deploy to Heroku, you will have something look like this 
-[](http://my-chat-app.herokuapp.com/oauth)
+
+   [http://my-chat-app.herokuapp.com/oauth](http://my-chat-app.herokuapp.com/oauth)
 
 
 ### Database
@@ -149,8 +184,21 @@ Each model wraps Mongoose Model object, overrides and provides some methods. The
 
 ### User Authentication
 
+User can login using either a username, email and password, or login via a social account. User authentication is done using Bearer Authentication.
+
+Bearer Authentication has good, and step-by-step [documentation](https://swagger.io/docs/specification/authentication/bearer-authentication/) on how to implement each way of authentication.
+
 
 ### Socket
 
+Having an active connection opened between the client and the server so client can send and receive data. This allows real-time communication using TCP sockets. This is made possible by [Socket.io](https://github.com/socketio/socket.io).
 
+The client starts by connecting to the server through a socket(maybe also assigned to a specific namespace). Once connections is successful, client and server can emit and listen to events.
+
+The namespaces used are:
+
+
+### License
+
+Built under [MIT](https://opensource.org/licenses/mit-license.php) license.
 
