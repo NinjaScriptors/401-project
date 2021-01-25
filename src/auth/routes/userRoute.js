@@ -5,10 +5,11 @@ const User = require('../models/users/user-schema.js');
 const { generateToken, isAdmin, isAuth } = require('../middleware/util');
 const bcrypt = require('bcryptjs');
 const userRouter = express.Router();
+const basicAuth = require('../middleware/basic-auth.js');
 
 
-userRouter.post('/signin', async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+userRouter.post('/signin', basicAuth, async (req, res) => {
+  const user = await User.findOne({ name: req.body.name });
   if (user) {
     if (bcrypt.compareSync(req.body.password, user.password)) {
       res.send({

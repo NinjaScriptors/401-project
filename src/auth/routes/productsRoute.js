@@ -27,6 +27,12 @@ productRouter.get('/:id', async (req, res) => {
   }
 });
 
+productRouter.get('/product', async (req, res) => {
+  const searchField = req.query.name;
+  const products = await Product.find({name:{$regex: searchField,$options:'$1'}});
+  res.send({ products });
+});
+
 productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
   const product = new Product({
     name: 'sample name ' + Date.now(),
