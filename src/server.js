@@ -12,14 +12,13 @@ const errorHandler = require('./middleware/500.js');
 const cors = require('cors');
 
 // Esoteric Resources
-const oauth = require('./auth/middleware/fb-oauth/facebook');
-
+const oauth = require('./auth/middleware/google-oauth/google');
 
 // App Level MW
 app.use(cors());
 
 // Website Files
-app.use(express.static('./auth/middleware/fb-oauth/public/index'));
+app.use(express.static('./auth/middleware/google-oauth/public/index'));
 
 // Routes
 app.get('/oauth',oauth ,(req, res) => {
