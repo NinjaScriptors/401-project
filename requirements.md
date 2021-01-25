@@ -102,6 +102,7 @@ In the store page, the products of this store will be displayed with their detai
     - **Feature tasks**: User can sign in/up to the app
     - **Acceptance test**: Ensure that the user is signed in/up
 
+________________________________________
 
 2.  - **Title**: Create a store
     - **User story**: As a seller, I want to be able to create a store for my
@@ -109,6 +110,7 @@ In the store page, the products of this store will be displayed with their detai
     - **Feature tasks**: User can create a store
     - **Acceptance test**: Ensure that the user is able to create a store
 
+________________________________________
 
 3.  - **Title**: Add/Update a product
     - **User story**: As a seller, I want to be able to add/update the
@@ -116,6 +118,7 @@ In the store page, the products of this store will be displayed with their detai
     - **Feature tasks**: User can add products
     - **Acceptance test**: Ensure that the products is added to the right user
 
+________________________________________
 
 4.  - **Title**: Adding a comment
     - **User story**: As a buyer, I want to be able to add comments on the
@@ -123,12 +126,14 @@ In the store page, the products of this store will be displayed with their detai
     - **Feature tasks**: User can add comments
     - **Acceptance test**: Ensure that the comments are added
 
+________________________________________
 
 5.  - **Title**: Rate products
     - **User story**: As a buyer, I want to be able to rate the products
     - **Feature tasks**: User can rate products
     - **Acceptance test**: Ensure that the user is able to rate
 
+________________________________________
 
 6.  - **Title**: Delete a product
     - **User story**: As an admin, I want to be able to delete the
@@ -136,6 +141,7 @@ In the store page, the products of this store will be displayed with their detai
     - **Feature tasks**: Admin can delete products
     - **Acceptance test**: Ensure that the products is deleted tby the admin only
 
+________________________________________
 
 7.  - **Title**: Consistency 
     - **User story**: As a user, I want my data to be consistent and still exists
