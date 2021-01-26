@@ -1,49 +1,48 @@
 'use strict';
-
+require('dotenv').config();
+const schema = require('./user-schema');
+const Model = require('../mongo-model');
 const jwt = require('jsonwebtoken');
-const schema = require('./user-schema.js');
 const bcrypt = require('bcrypt');
-const Model = require('../mongo-model.js');
-const SECRET = process.env.SECRET || 'somethingsecret';
+const SECRET = process.env.SECRET;
 
-class User extends Model {
-  constructor() {
-    super(schema);
-  }
-  async save(record) {
-    let userObj = await this.get({ name: record.name });
-    console.log('__User Object__ ', userObj);
-    console.log('Record >>>>', record);
 
-    if (userObj.length == 0) {
-      record.password = await bcrypt.hash(record.password, 5);
-      console.log('Record >>>>', record);
-
-      await this.create(record);
-      return record;
-    } else {
-      console.log('This username exists');
-      return Promise.reject();
+class Users extends Model {
+    constructor() {
+        super(schema);
     }
-  }
 
-  async authenticateBasic(user, password) {
-    let userObj = await this.get({ name: user });
-    console.log('__User Object__ ', userObj);
-    const valid = await bcrypt.compare(password, userObj[0].password);
-    console.log('Is valid? >>>>', valid);
-    return valid ? userObj[0] : Promise.reject();
-  }
+    async save(record) {
+        
+        let data = await this.get({ _id: record.id });
 
-  //send the capabilities
-  generateTokenBasic(user) {
-    try{
-        const token =  jwt.sign({ name: user.name }, SECRET);
-        console.log('token in generateToken()',token);
-        return token;
-      }catch(err){
-        console.log(err);
-      }
+        if (data.length === 0) {
+            console.log('inside if------->')
+            record.password = await bcrypt.hash(record.password, 5);
+            console.log('record after hash', record);
+            return await this.create(record)
+        }
+        console.log('outside if------->')
+        return Promise.reject('this user is already signUp');
+    }
+
+    generateToken(user) {
+        console.log('inside getToken()');
+        return jwt.sign(
+            {
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+              isAdmin: user.isAdmin,
+              isSeller: user.isSeller,
+            },
+            process.env.SECRET || 'somethingsecret',
+            {
+              expiresIn: '30d',
+            }
+          );
+    }
+  
+
 }
-}
-module.exports = new User()
+module.exports = new Users();

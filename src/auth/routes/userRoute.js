@@ -8,7 +8,7 @@ const userRouter = express.Router();
 const basicAuth = require('../middleware/basic-auth.js');
 
 
-userRouter.post('/signin', basicAuth, async (req, res) => {
+userRouter.post('/signin', async (req, res) => {
   const user = await User.findOne({ name: req.body.name });
   if (user) {
     if (bcrypt.compareSync(req.body.password, user.password)) {
@@ -47,6 +47,17 @@ userRouter.post('/signup', async (req, res) => {
   console.log('TOKEN >>>', generateToken(createdUser));
 });
 
+// userRouter.get('/signout',(req,res)=>{
+//   req.logout();
+
+//   // destroy session data
+//   req.session = null;
+
+//   // redirect to homepage
+ 
+//     res.send(' Logged out Successful')
+// });
+
 userRouter.get('/:id', async (req, res) => {
   const user = await User.findById(req.params.id);
   console.log('User get/:id >>>', user);
@@ -57,7 +68,7 @@ userRouter.get('/:id', async (req, res) => {
   }
 });
 
-userRouter.get('/', isAuth, async (req, res) => {
+userRouter.get('/', async (req, res) => {
   const users = await User.find({});
   res.send(users);
 });

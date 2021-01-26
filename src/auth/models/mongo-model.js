@@ -5,9 +5,10 @@ class Model {
   constructor(schema) {
     this.schema = schema;
   }
-  get(record) {
-    const query = record ? record : {};
-    return this.schema.find(query);
+
+  get(query) {
+    const queryObject = query ? query : {};
+    return this.schema.find(queryObject);
   }
   create(record) {
     const newRecord = new this.schema(record);

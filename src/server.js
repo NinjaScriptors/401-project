@@ -8,6 +8,24 @@ const app = express();
 const notFound = require('./middleware/404.js');
 const errorHandler = require('./middleware/500.js');
 
+// 3rd Party Resources
+const cors = require('cors');
+
+// Esoteric Resources
+const oauth = require('./auth/middleware/google-oauth/google');
+
+// App Level MW
+app.use(cors());
+
+// Website Files
+app.use(express.static('./auth/middleware/google-oauth/public/index'));
+
+// Routes
+app.get('/oauth',oauth ,(req, res) => {
+    
+  res.status(200).send(req.token);
+});
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
