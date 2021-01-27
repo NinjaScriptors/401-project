@@ -10,6 +10,9 @@ const userRouter = express.Router();
 userRouter.post('/signin', async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
+    if (user.email === 'admin@herfa.com'){
+      user.isAdmin === true;
+    }
     if (bcrypt.compareSync(req.body.password, user.password)) {
       res.send({
         _id: user._id,
@@ -76,7 +79,7 @@ userRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
     //if (user.isAdmin === true)
-    if (user.email === 'admin@example.com') {
+    if (user.email === 'admin@herfa.com') {
       res.status(400).send({ message: 'Can Not Delete Admin User' });
       return;
     }
