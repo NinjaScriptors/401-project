@@ -38,7 +38,7 @@ userRouter.post('/signup', async (req, res) => {
   
   });
   if (user.email === 'admin@herfa.com'){
-    user.isAdmin === true;
+    user.isAdmin = true;
   }
   const createdUser = await user.save();
   console.log('Created User >>>', user);
