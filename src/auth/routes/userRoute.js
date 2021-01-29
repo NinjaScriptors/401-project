@@ -20,6 +20,7 @@ userRouter.post('/signin', async (req, res) => {
         isSeller: user.isSeller,
         token: generateToken(user),
       });
+      
       return;
     }
   }
@@ -74,7 +75,7 @@ userRouter.get('/:id', async (req, res) => {
   }
 });
 
-userRouter.get('/', isAuth, async (req, res) => {
+userRouter.get('/', async (req, res) => {
   const users = await User.find({});
   res.send(users);
 });

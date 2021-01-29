@@ -26,4 +26,42 @@ const userSchema = mongoose.Schema({
 );
 
 
+
+
+// return object of users that has id = ids  
+userSchema.statics.getUserByIds = async function (ids) {
+  try {
+    const users = await this.find({ _id: { $in: ids } });
+    return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+userSchema.statics.getUsers = async function () {
+  try {
+    const users = await this.find();
+    return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+userSchema.statics.createUser = async function (
+	firstName, 
+    	lastName, 
+    	type
+) {
+  try {
+    const user = await this.create({ firstName, lastName, type });
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 module.exports = mongoose.model('User', userSchema);
