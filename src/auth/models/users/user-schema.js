@@ -50,18 +50,20 @@ userSchema.statics.getUsers = async function () {
 }
 
 
-userSchema.statics.createUser = async function (
-	firstName, 
-    	lastName, 
-    	type
-) {
-  try {
-    const user = await this.create({ firstName, lastName, type });
-    return user;
-  } catch (error) {
-    throw error;
-  }
-}
+// userSchema.statics.createUser = async function (
+//   firstName,
+//   lastName,
+//   type
+// ) {
+//   try {
+//     const user = await this.create({ firstName, lastName, type });
+//     return user;
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+
 
 
 module.exports = mongoose.model('User', userSchema);

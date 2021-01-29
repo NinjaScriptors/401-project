@@ -74,13 +74,13 @@ productRouter.get('/:id', async (req, res) => {
 
 productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
   const product = new Product({
-    name: 'sample name ' + Date.now(),
+    name: req.body.name ,
     seller: req.user._id,
     image: '/images/p1.jpg',
-    price: 0,
-    category: 'sample category',
-    brand: 'sample brand',
-    countInStock: 0,
+    price: req.body.price,
+    category: req.body.category,
+    brand: req.body.brand,
+    countInStock: req.body.countInStock,
     rating: 0,
     numReviews: 0,
     description: 'sample description',

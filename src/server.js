@@ -14,7 +14,7 @@ const { isAuth } = require('./auth/middleware/util')
 const fs = require('fs');
 
 // 3rd Party Resources
-const cors = require('cors');
+
 
 // Esoteric Resources
 const oauth = require('./auth/middleware/google-oauth/google');
@@ -47,8 +47,8 @@ const WebSockets = require("./chatApp/server/utils/WebSockets");
 
 /** Create HTTP server. */
 const server = http.createServer(app);
-const socketio = require("socket.io")(server)
-socketio.on('connection', WebSockets.connection)
+global.io = require("socket.io")(server)
+global.io.on('connection', WebSockets.connection)
 
 
 

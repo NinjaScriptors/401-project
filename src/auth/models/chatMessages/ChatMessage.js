@@ -1,4 +1,4 @@
-const mongoose =require("mongoose");
+const mongoose = require("mongoose");
 const { v4: uuidv4 } = require('uuid');
 
 const MESSAGE_TYPES = {
@@ -40,15 +40,15 @@ const chatMessageSchema = new mongoose.Schema(
   }
 );
 
-chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, message, postedByUser) {
+const createPostInChatRoom = async function (chatRoomId, message, postedByUser) {
   try {
-    const post = await this.create({
+    const post = await chatMessageSchema.create({
       chatRoomId,
       message,
       postedByUser,
       readByRecipients: { readByUserId: postedByUser }
     });
-    const aggregate = await this.aggregate([
+    const aggregate = await chatMessageSchema.aggregate([
       // get post where _id = post._id
       { $match: { _id: post._id } },
       // do a join on another table called users, and 
@@ -112,29 +112,68 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
 // This says I want to find all the message posts in the chatmessages collection where chatRoomId matches and readByRecipients array does not.          (line 117)
 
 // then update them (line 123)
-chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentUserOnlineId) {
-    try {
-      return this.updateMany(
-        {
-          chatRoomId,
-          'readByRecipients.readByUserId': { $ne: currentUserOnlineId }
-        },
-        {
-          $addToSet: {
-            readByRecipients: { readByUserId: currentUserOnlineId }
-          }
-        },
-        {
-          multi: true
+const markMessageRead = async function (chatRoomId, currentUserOnlineId) {
+  try {
+    return chatMessageSchema.updateMany(
+      {
+        chatRoomId,
+        'readByRecipients.readByUserId': { $ne: currentUserOnlineId }
+      },
+      {
+        $addToSet: {
+          readByRecipients: { readByUserId: currentUserOnlineId }
         }
-      );
-    } catch (error) {
-      throw error;
-    }
+      },
+      {
+        multi: true
+      }
+    );
+  } catch (error) {
+    throw error;
   }
+}
 
 
 
 
 
-module.exports = mongoose.model("ChatMessage", chatMessageSchema);
+// const getConversationByRoomId = async function (chatRoomId, options = {}) {
+//   try {
+//     return chatMessageSchema.aggregate([
+//       { $match: { chatRoomId } },
+//       { $sort: { createdAt: -1 } },
+//       // do a join on another table called users, and 
+//       // get me a user whose _id = postedByUser
+//       {
+//         $lookup: {
+//           from: 'users',
+//           localField: 'postedByUser',
+//           foreignField: '_id',
+//           as: 'postedByUser',
+//         }
+//       },
+//       { $unwind: "$postedByUser" },
+//       // apply pagination
+//       { $skip: options.page * options.limit },
+//       { $limit: options.limit },
+//       { $sort: { createdAt: 1 } },
+//     ]);
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+
+
+
+
+
+
+
+
+module.exports = {
+  chatMessageSchema: mongoose.model("ChatMessage", chatMessageSchema),
+  createPostInChatRoom: createPostInChatRoom,
+  markMessageRead: markMessageRead
+
+}

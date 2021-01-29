@@ -26,7 +26,7 @@ const chatRoomSchema = new mongoose.Schema(
     }
 );
 
-chatRoomSchema.statics.initiateChat = async function (
+chatRoomSchema.initiateChat = async function (
     userIds, type, chatInitiator
 ) {
     try {
@@ -63,7 +63,7 @@ chatRoomSchema.statics.initiateChat = async function (
 
 
 
-chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
+chatRoomSchema.getChatRoomByRoomId = async function (roomId) {
     try {
       const room = await this.findOne({ _id: roomId });
       return room;

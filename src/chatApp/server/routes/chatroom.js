@@ -10,6 +10,6 @@ router
     .post('/initiate', chatRoom.initiate)
     .post('/:roomId/message', chatRoom.postMessage)
     .put('/:roomId/mark-read', chatRoom.markConversationReadByRoomId)
-    
+
 
 module.exports = router;
