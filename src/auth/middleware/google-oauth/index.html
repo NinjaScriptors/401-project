@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Auth Test</title>
+</head>
+
+<body>
+  <main>
+
+    <h1> <a id="oauth" href="#">Login With Google</a></h1>
+    
+  </main>
+
+  <script>
+
+    let URL = "https://accounts.google.com/o/oauth2/v2/auth";
+
+    let options = {
+      response_type: 'code',
+      client_id: '632114540588-7tndcieekh6tti899pajuah10acb466i.apps.googleusercontent.com',
+      redirect_uri: 'http://localhost:3000/oauth/',
+      scope: 'openid email',
+      state: 'asldfjdfs'
+    }
+       // ******************************************************** heruko link is :  
+      //  change it from the .env too.
+    // https://oauth-lab12.herokuapp.com/oauth/
+    let QueryString = Object.keys(options).map((key) => {
+      return `${key}=` + encodeURIComponent(options[key]);
+    }).join("&");
+
+    let authURL = `${URL}?${QueryString}`;
+
+    let link = document.getElementById('oauth');
+    link.setAttribute('href', authURL);
+
+  </script>
+
+
+</body>
+
+</html>
