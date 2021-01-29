@@ -50,6 +50,7 @@ const isAuth = (req, res, next) => {
 
 const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
+    
     next();
   } else {
     res.status(401).send({ message: 'Invalid Admin Token' });
@@ -83,4 +84,9 @@ const isSellerOrAdmin = async (req, res, next) => {
     res.status(401).send({ message: 'Invalid Admin/Seller Token' });
   }
 };
+
+// const endSession = async(req, res, next) =>{
+//     req.user = '' ; 
+//     next();
+// };
 module.exports = { generateToken, isAuth, isAdmin, isSeller, isSellerOrAdmin };

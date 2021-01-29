@@ -5,10 +5,55 @@ const { isAdmin, isAuth, isSellerOrAdmin, isSeller } = require('../middleware/ut
 const Product = require('../models/products/product-schema.js');
 const productRouter = express.Router();
 
-productRouter.get('/', async (req, res) => {
-  const products = await Product.find({});
-  res.send({ products });
-});
+productRouter.get('/search', async (req, res) => {
+    const pageSize = 3;
+    const page = Number(req.query.pageNumber) || 1;
+    const name = req.query.name || '';
+    const category = req.query.category || '';
+    const seller = req.query.seller || '';
+    const min =
+      req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
+    const max =
+      req.query.max && Number(req.query.max) !== 0 ? Number(req.query.max) : 0;
+    const rating =
+      req.query.rating && Number(req.query.rating) !== 0
+        ? Number(req.query.rating)
+        : 0;
+
+    const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
+    const sellerFilter = seller ? { seller } : {};
+    const categoryFilter = category ? { category } : {};
+    const priceFilter = min && max ? { price: { $gte: min, $lte: max } } : {};
+    const ratingFilter = rating ? { rating: { $gte: rating } } : {};
+    
+    const count = await Product.estimatedDocumentCount({
+      ...sellerFilter,
+      ...nameFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    });
+    const products = await Product.find({
+      ...sellerFilter,
+      ...nameFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    })
+      .populate('seller', 'seller.name seller.logo')
+      // .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    res.send({ products, page, pages: Math.ceil(count / pageSize) });
+  })
+ 
+  productRouter.get('/', async (req, res) => {
+    const products = await Product.find({
+    })
+    res.send(products);
+ 
+  })
+
 
 productRouter.get('/categories', async (req, res) => {
   const categories = await Product.find().distinct('category');
@@ -29,13 +74,13 @@ productRouter.get('/:id', async (req, res) => {
 
 productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
   const product = new Product({
-    name: 'sample name ' + Date.now(),
+    name: req.body.name ,
     seller: req.user._id,
     image: '/images/p1.jpg',
-    price: 0,
-    category: 'sample category',
-    brand: 'sample brand',
-    countInStock: 0,
+    price: req.body.price,
+    category: req.body.category,
+    brand: req.body.brand,
+    countInStock: req.body.countInStock,
     rating: 0,
     numReviews: 0,
     description: 'sample description',
@@ -46,7 +91,7 @@ productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
 });
 
 //Can an Admin update other users' products ?
-productRouter.put('/:id', isAuth, isSeller, async (req, res) => {
+productRouter.put('/:id', isAuth, isSellerOrAdmin, async (req, res) => {
   const productId = req.params.id;
   const product = await Product.findById(productId);
   if (product) {

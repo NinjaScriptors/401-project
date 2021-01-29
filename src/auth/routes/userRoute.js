@@ -10,6 +10,7 @@ const userRouter = express.Router();
 userRouter.post('/signin', async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
+  
     if (bcrypt.compareSync(req.body.password, user.password)) {
       res.send({
         _id: user._id,
@@ -27,13 +28,19 @@ userRouter.post('/signin', async (req, res) => {
 });
 
 userRouter.post('/signup', async (req, res) => {
+
   const user = new User({
+   
     name: req.body.name,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
     // isAdmin: req.body.isAdmin,
     isSeller: req.body.isSeller
+  
   });
+  if (user.email === 'admin@herfa.com'){
+    user.isAdmin = true;
+  }
   const createdUser = await user.save();
   console.log('Created User >>>', user);
   res.send({
@@ -46,6 +53,17 @@ userRouter.post('/signup', async (req, res) => {
   });
   console.log('TOKEN >>>', generateToken(createdUser));
 });
+
+// userRouter.get('/signout',(req,res)=>{
+//   req.logout();
+
+//   // destroy session data
+//   req.session = null;
+
+//   // redirect to homepage
+ 
+//     res.send(' Logged out Successful')
+// });
 
 userRouter.get('/:id', async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -66,7 +84,7 @@ userRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
     //if (user.isAdmin === true)
-    if (user.email === 'admin@example.com') {
+    if (user.email === 'admin@herfa.com') {
       res.status(400).send({ message: 'Can Not Delete Admin User' });
       return;
     }
