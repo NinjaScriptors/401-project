@@ -26,9 +26,9 @@ app.use(cors());
 app.use(express.static('./auth/middleware/google-oauth/public/index'));
 
 // Routes
-app.get('/oauth',oauth ,(req, res) => {
-    
-  res.status(200).send(req.token);
+app.get('/oauth', oauth, (req, res) => {
+
+    res.status(200).send(req.token);
 });
 
 
@@ -82,11 +82,10 @@ app.use(errorHandler);
 
 
 
-
-
 module.exports = {
     server: server,
-    start: () => {
-        server.listen(3000, () => console.log("listening on port 3000"))
+    start: (port) => {
+        let PORT = port || process.env.PORT || 3000
+        server.listen(PORT, () => console.log("listening on port ",PORT))
     }
 };
