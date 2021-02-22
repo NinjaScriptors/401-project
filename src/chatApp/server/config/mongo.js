@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('./index.js');
 
-const CONNECTION_URL = `mongodb://${config.db.url}/${config.db.name}`
+const CONNECTION_URL = `mongodb+srv://herfa:0000@herfa.6wig8.mongodb.net/herfaDB?retryWrites=true&w=majority`
 
 mongoose.connect(CONNECTION_URL, {
     useNewUrlParser: true,

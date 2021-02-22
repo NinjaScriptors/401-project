@@ -1,4 +1,4 @@
-
+let UserModel = require("../../../auth/models/users/user-schema");
 module.exports = {
     onGetAllUsers: async (req, res) => {
         try {
