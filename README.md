@@ -1,4 +1,4 @@
-# 401-project
+# Herfa
 
 An e-commerce application built using Node.js, Express.js, MongoDB, Socket.io
 
