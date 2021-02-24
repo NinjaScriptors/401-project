@@ -51,7 +51,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
 
     "mongoose": "^5.11.13",
     "superagent": "^6.1.0"
