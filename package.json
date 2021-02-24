@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NinjaScriptors/401-project.git"
+    "url": "git+https://github.com/NinjaScriptors/Herfa.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NinjaScriptors/401-project/issues"
+    "url": "https://github.com/NinjaScriptors/Herfa/issues"
   },
-  "homepage": "https://github.com/NinjaScriptors/401-project#readme",
+  "homepage": "https://github.com/NinjaScriptors/Herfa#readme",
   "dependencies": {
     "@withvoid/make-validation": "^1.0.5",
     "axios": "^0.21.1",
