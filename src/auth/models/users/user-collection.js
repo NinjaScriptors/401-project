@@ -38,7 +38,7 @@ class User extends Model {
   //send the capabilities
   generateTokenBasic(user) {
     try{
-        const token =  jwt.sign({ name: user.name }, SECRET);
+        const token =  jwt.sign({ _id: user._id }, SECRET);
         console.log('token in generateToken()',token);
         return token;
       }catch(err){

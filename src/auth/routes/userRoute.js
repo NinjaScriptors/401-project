@@ -8,28 +8,16 @@ const userRouter = express.Router();
 const basicAuth = require('../middleware/basic-auth.js');
 
 
-userRouter.post('/signin', basicAuth, async (req, res) => {
-  const user = await User.findOne({ name: req.body.name });
-  if (user) {
-    if (bcrypt.compareSync(req.body.password, user.password)) {
-      res.send({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isSeller: user.isSeller,
-        token: generateToken(user),
-      });
-      return;
-    }
-  }
-  res.status(401).send({ message: 'Invalid email or password' });
+userRouter.post('/signin', basicAuth, isAuth, async (req, res) => {
+  console.log("header>>>", req.header);
+  res.status(200).send({ token: req.token, user: req.user });
 });
 
 userRouter.post('/signup', async (req, res) => {
   const user = new User({
     name: req.body.name,
     email: req.body.email,
+    fullName: req.body.fullName,
     password: bcrypt.hashSync(req.body.password, 8),
     // isAdmin: req.body.isAdmin,
     isSeller: req.body.isSeller
