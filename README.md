@@ -7,15 +7,15 @@ An e-commerce application built using Node.js, Express.js, MongoDB, Socket.io
 ## Index
 
 - [Demo](#Demo)
-- [Overview](##Overview)
-- [Software Requirements and User Stories](##Software-Requirements-and-User-Stories)
-- [Wireframe, Domain Modeling and ERD](##Wireframe,-Domain-Modeling-and-ERD)
-- [Features](##Features)
-- [Installation](##Installation)
-- [How it works](##How-it-works)
-- [Manual Test](##Manual-Test)
-- [Jest Test](##Jest-Test)
-- [Postman Test](##Postman-Test)
+- [Overview](#Overview)
+- [Software Requirements and User Stories](#Software-Requirements-and-User-Stories)
+- [Wireframe, Domain Modeling and ERD](#Wireframe,-Domain-Modeling-and-ERD)
+- [Features](#Features)
+- [Installation](#Installation)
+- [How it works](#How-it-works)
+- [Manual Test](#Manual-Test)
+- [Jest Test](#Jest-Test)
+- [Postman Test](#Postman-Test)
 
 
 ## Demo
