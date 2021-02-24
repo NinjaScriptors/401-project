@@ -6,7 +6,7 @@ An e-commerce application built using Node.js, Express.js, MongoDB, Socket.io
 
 ## Index
 
-- [Demo](##Demo)
+- [Demo](#Demo)
 - [Overview](##Overview)
 - [Software Requirements and User Stories](##Software-Requirements-and-User-Stories)
 - [Wireframe, Domain Modeling and ERD](##Wireframe,-Domain-Modeling-and-ERD)
