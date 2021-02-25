@@ -5,10 +5,10 @@ const supergose = require('@code-fellows/supergoose');
 const mockRequest = supergose(server);
 const bcrypt = require('bcryptjs');
 
-describe('users route ', () => {
+describe('Users API ', () => {
 
 
-    it('SIGN UP -> should create a new user by using post()', async () => {
+    it('Should be able to create a new user when sign up', async () => {
         let testObject = {
             name: 'test',
             email: 'test7@test.com',
@@ -28,7 +28,7 @@ describe('users route ', () => {
             });
     });
 
-    it('SIGN UP --> isSeller:F isAdmin:F', async () => {
+    it('Should sign up as buyer by default', async () => {
         let testObject = {
             name: 'test',
             email: 'test@test.com',
@@ -50,7 +50,7 @@ describe('users route ', () => {
             });
     });
 
-    it('SIGN UP  -->  isAdmin:F and isSeller:T', async () => {
+    it('Should be able to sign up as a seller', async () => {
         let testObject = {
             name: 'test',
             email: 'test6@test.com',
@@ -75,7 +75,7 @@ describe('users route ', () => {
     });
 
 
-    it('SIGN IN using Bearer Auth', () => {
+    it('Sign in using Bearer Authentication', () => {
         let testObject = {
             name: 'test',
             email: 'test5@test.com',
@@ -104,7 +104,7 @@ describe('users route ', () => {
             });
     });
 
-    it('SIGN IN --> isSeller:F  isAdmin:F', () => {
+    it('Should sign in as buyer by default', () => {
         let testObject = {
             name: 'test',
             email: 'test@test.com',
@@ -135,7 +135,7 @@ describe('users route ', () => {
             });
     });
 
-    it('SIGN IN --> isSeller:T  isAdmin:T', () => {
+    it('Should updated the buyer to seller when sign in if signed up as a seller', () => {
         let testObject = {
             name: 'test',
             email: 'test6@test.com',
@@ -190,8 +190,12 @@ describe('Fail case in Sign-in/up', () => {
         })
     })
 
-   
 
-    
+    it('Unregistered users can not add reviews', async () => {
+        return mockRequest.post('/:id/reviews').then((result) => {
+            expect(result.status).toBe(404);
+        });
+    });
+
 
 });

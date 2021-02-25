@@ -4,9 +4,9 @@ const { server } = require('../src/server.js');
 const supergose = require('@code-fellows/supergoose');
 const mockRequest = supergose(server);
 
-describe('Product API Module', ()=>{
+describe('Products API', ()=>{
 
-    it('should return all products data by using get()',()=> {
+    it('Should return all products data by using get()',()=> {
       return mockRequest.get('/api/products')
         .then(data =>{
           expect(typeof data).toBe('object');
@@ -14,7 +14,7 @@ describe('Product API Module', ()=>{
         });
     }); 
 
-    it('should return all products data by using get()',()=> {
+    it('Should return all products categories by using get()',()=> {
         return mockRequest.get('/api/products/categories')
           .then(data =>{
             expect(typeof data).toBe('object');
@@ -99,9 +99,4 @@ describe('Product API Module', ()=>{
         });
     }); 
   
-    it('Unregistered users can not add reviews', async () => {
-        return mockRequest.post('/:id/reviews').then((result) => {
-            expect(result.status).toBe(404);
-        });
-    });
   });

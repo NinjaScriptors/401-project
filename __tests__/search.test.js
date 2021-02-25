@@ -14,10 +14,10 @@ describe('Search', () => {
         email: "newUssser@ll.com"
     }
 
-    let testObject = { name: 'testProduct', category: 'eastern food', brand: 'food',countInStock: '10 ',price: '5',image: 'image/p.png',numReviews: '5',description: 'delicious',rating: 4};
+    let testObject = { name: 'testProduct', category: 'food', brand: 'food',countInStock: '10 ',price: '5',image: 'image/p.png',numReviews: '5',description: 'delicious',rating: 4};
 
 
-    it('Can\'t search for products unless authorized', () => {
+    it('Can\'t search for products unless the user is authorized', () => {
         return mockRequest.get('/search').then((result) => {
             expect(result.status).toBe(404);
         });
@@ -33,7 +33,7 @@ describe('Search', () => {
     //           let results = data.body;
     //           expect(typeof data).toBe('object');
     //           expect(data.status).toBe(401);
-    //           return mockRequest.get('/search?brand=food').then((result) => {
+    //           return mockRequest.get('/search?category=food').then((result) => {
     //               expect(result.status).toBe(200);
     //           });
     //         });
