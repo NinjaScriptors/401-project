@@ -42,6 +42,14 @@ class Users extends Model {
             }
           );
     }
+
+    async authenticateBasic(user, password) {
+      let userObj = await this.get({ name: user });
+      console.log('__User Object__ ', userObj);
+      const valid = await bcrypt.compare(password, userObj[0].password);
+      console.log('Is valid? >>>>', valid);
+      return valid ? userObj[0] : Promise.reject();
+    }
   
 
 }

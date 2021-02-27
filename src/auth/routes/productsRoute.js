@@ -5,47 +5,6 @@ const { isAdmin, isAuth, isSellerOrAdmin, isSeller } = require('../middleware/ut
 const Product = require('../models/products/product-schema.js');
 const productRouter = express.Router();
 
-productRouter.get('/search', async (req, res) => {
-    const pageSize = 3;
-    const page = Number(req.query.pageNumber) || 1;
-    const name = req.query.name || '';
-    const category = req.query.category || '';
-    const seller = req.query.seller || '';
-    const min =
-      req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
-    const max =
-      req.query.max && Number(req.query.max) !== 0 ? Number(req.query.max) : 0;
-    const rating =
-      req.query.rating && Number(req.query.rating) !== 0
-        ? Number(req.query.rating)
-        : 0;
-
-    const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
-    const sellerFilter = seller ? { seller } : {};
-    const categoryFilter = category ? { category } : {};
-    const priceFilter = min && max ? { price: { $gte: min, $lte: max } } : {};
-    const ratingFilter = rating ? { rating: { $gte: rating } } : {};
-    
-    const count = await Product.estimatedDocumentCount({
-      ...sellerFilter,
-      ...nameFilter,
-      ...categoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    });
-    const products = await Product.find({
-      ...sellerFilter,
-      ...nameFilter,
-      ...categoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    })
-      .populate('seller', 'seller.name seller.logo')
-      // .sort(sortOrder)
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    res.send({ products, page, pages: Math.ceil(count / pageSize) });
-  })
  
   productRouter.get('/', async (req, res) => {
     const products = await Product.find({
@@ -76,14 +35,14 @@ productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
   const product = new Product({
     name: req.body.name ,
     seller: req.user._id,
-    image: '/images/p1.jpg',
+    image: req.body.image,
     price: req.body.price,
     category: req.body.category,
     brand: req.body.brand,
     countInStock: req.body.countInStock,
     rating: 0,
     numReviews: 0,
-    description: 'sample description',
+    description: req.body.description,
   });
   console.log('Created Product >>>>', product);
   const createdProduct = await product.save();
@@ -116,7 +75,7 @@ productRouter.put('/:id', isAuth, isSellerOrAdmin, async (req, res) => {
 
 //make a notification sent to the admin for if user wants to delete a product
 
-productRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
+productRouter.delete('/:id', isAuth, async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (product) {
     const deleteProduct = await product.remove();
@@ -126,6 +85,49 @@ productRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
     res.status(404).send({ message: 'Product Not Found' });
   }
 });
+
+
+productRouter.get('/search', async (req, res) => {
+  const pageSize = 3;
+  const page = Number(req.query.pageNumber) || 1;
+  const name = req.query.name || '';
+  const category = req.query.category || '';
+  const seller = req.query.seller || '';
+  const min =
+    req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
+  const max =
+    req.query.max && Number(req.query.max) !== 0 ? Number(req.query.max) : 0;
+  const rating =
+    req.query.rating && Number(req.query.rating) !== 0
+      ? Number(req.query.rating)
+      : 0;
+
+  const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
+  const sellerFilter = seller ? { seller } : {};
+  const categoryFilter = category ? { category } : {};
+  const priceFilter = min && max ? { price: { $gte: min, $lte: max } } : {};
+  const ratingFilter = rating ? { rating: { $gte: rating } } : {};
+  
+  const count = await Product.estimatedDocumentCount({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  });
+  const products = await Product.find({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  })
+    .populate('seller', 'seller.name seller.logo')
+    // .sort(sortOrder)
+    .skip(pageSize * (page - 1))
+    .limit(pageSize);
+  res.send({ products, page, pages: Math.ceil(count / pageSize) });
+})
 
 productRouter.post('/:id/reviews', isAuth, async (req, res) => {
   const productId = req.params.id;
