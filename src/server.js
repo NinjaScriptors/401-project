@@ -14,7 +14,7 @@ const { isAuth } = require('./auth/middleware/util')
 const fs = require('fs');
 
 // 3rd Party Resources
-const cors = require('cors');
+
 
 // Esoteric Resources
 const oauth = require('./auth/middleware/google-oauth/google');
@@ -26,9 +26,9 @@ app.use(cors());
 app.use(express.static('./auth/middleware/google-oauth/public/index'));
 
 // Routes
-app.get('/oauth',oauth ,(req, res) => {
-    
-  res.status(200).send(req.token);
+app.get('/oauth', oauth, (req, res) => {
+
+    res.status(200).send(req.token);
 });
 
 
@@ -47,8 +47,8 @@ const WebSockets = require("./chatApp/server/utils/WebSockets");
 
 /** Create HTTP server. */
 const server = http.createServer(app);
-const socketio = require("socket.io")(server)
-socketio.on('connection', WebSockets.connection)
+global.io = require("socket.io")(server)
+global.io.on('connection', WebSockets.connection)
 
 
 
@@ -82,11 +82,10 @@ app.use(errorHandler);
 
 
 
-
-
 module.exports = {
     server: server,
-    start: () => {
-        server.listen(3000, () => console.log("listening on port 3000"))
+    start: (port) => {
+        let PORT = port || process.env.PORT || 3000
+        server.listen(PORT, () => console.log("listening on port ",PORT))
     }
 };

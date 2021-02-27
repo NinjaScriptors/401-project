@@ -9,7 +9,7 @@ class WebSockets {
         client.on("identity", (userId) => {
             this.users.push({
                 socketId: client.id,
-                userId: userId,
+                _id: userId,
             });
         });
         // subscribe person to chat & other user as well
@@ -25,7 +25,7 @@ class WebSockets {
 
     subscribeOtherUser(room, otherUserId) {
         const userSockets = this.users.filter(
-            (user) => user.userId === otherUserId
+            (user) => user._id === otherUserId
         );
         userSockets.map((userInfo) => {
             const socketConn = global.io.sockets.connected(userInfo.socketId);
