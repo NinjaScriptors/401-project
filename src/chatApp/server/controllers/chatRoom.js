@@ -3,6 +3,8 @@ const UserModel = require('../../../auth/models/users/user-schema')
 const chatMessageSchema = require('../../../auth/models/chatMessages/ChatMessage')
 const { CHAT_ROOM_TYPES } = require('../../../auth/models/chatRoom/chatRoom')
 const MongoClient = require('mongodb').MongoClient;
+const { users } = require('../utils/WebSockets');
+const user = require('./user');
 
 async function initiateChat(userIds, type, chatInitiator) {
   try {
@@ -41,19 +43,6 @@ module.exports = {
   initiate: async (req, res) => {
 
     console.log("before validation ")
-
-    // const validation = makeValidation(types => ({
-    //   payload: req.body,
-    //   checks: {
-    //     userIds: {
-    //       type: types.array,
-    //       options: { unique: true, empty: false, stringOnly: true }
-    //     },
-
-    //   }
-    // }));
-    // if (!validation.success) return res.status(400).json({ ...validation });
-
     console.log(req.body.userIds)
     const { userIds, type } = req.body;
     const chatInitiator = req.user._id;
@@ -70,7 +59,16 @@ module.exports = {
 
 
 
+  getRoomsByUserId: async (req, res) => {
+    let userId = req.params.userId;
+    const room = await ChatRoomModel.find({})
 
+    let result =room.filter(element => {
+      if (element.userIds.includes(userId)) return true
+    })
+    console.log(result)
+    res.status(200).send(result);
+  },
 
 
   postMessage: async (req, res) => {
@@ -106,22 +104,9 @@ module.exports = {
 
 
   getRecentConversation: async (req, res) => {
-    const room = await ChatRoomModel.findOne({})
-
-    // if (!room) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: 'No room yet, add one first', 
-    //   })
-    // }
-    console.log(room)
-    // const users = await UserModel.getUserByIds(room.userIds);
-    // const options = {
-    //   page: parseInt(req.query.page) || 0,
-    //   limit: parseInt(req.query.limit) || 10,
-    // };
-
-    return res.status(200).json(room)
+    const room = await ChatRoomModel.find({})
+    let result = room.map(e => e)
+    return res.status(200).json(result)
   },
 
 

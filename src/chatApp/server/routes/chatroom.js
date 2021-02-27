@@ -8,6 +8,7 @@ router
     .get('/', chatRoom.getRecentConversation)
     .get('/:roomId', chatRoom.getConversationByRoomId)
     .post('/initiate', chatRoom.initiate)
+    .get('/userRooms/:userId',chatRoom.getRoomsByUserId)
     .post('/:roomId/message', chatRoom.postMessage)
     .put('/:roomId/mark-read', chatRoom.markConversationReadByRoomId)
 
