@@ -5,10 +5,55 @@ const { isAdmin, isAuth, isSellerOrAdmin, isSeller } = require('../middleware/ut
 const Product = require('../models/products/product-schema.js');
 const productRouter = express.Router();
 
+productRouter.get('/search', async (req, res) => {
+  const pageSize = 9;
+  const page = Number(req.query.pageNumber) || 1;
+  const name = req.query.name || '';
+  const category = req.query.category || '';
+  const seller = req.query.seller || '';
+  const min =
+    req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
+  const max =
+    req.query.max && Number(req.query.max) !== 0 ? Number(req.query.max) : 0;
+  const rating =
+    req.query.rating && Number(req.query.rating) !== 0
+      ? Number(req.query.rating)
+      : 0;
+
+  const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
+  const sellerFilter = seller ? { seller } : {};
+  const categoryFilter = category ? { category } : {};
+  const priceFilter = min && max ? { price: { $gte: min, $lte: max } } : {};
+  const ratingFilter = rating ? { rating: { $gte: rating } } : {};
+  
+  const count = await Product.estimatedDocumentCount({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  });
+  const products = await Product.find({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  })
+    .populate('seller', 'seller.name seller.logo')
+    // .sort(sortOrder)
+    .skip(pageSize * (page - 1))
+    .limit(pageSize);
+  res.send({ products, page, pages: Math.ceil(count / pageSize) });
+})
+
 productRouter.get('/', async (req, res) => {
-  const products = await Product.find({});
-  res.send({ products });
-});
+  const products = await Product.find({
+  })
+  res.send(products);
+
+})
+
 
 productRouter.get('/categories', async (req, res) => {
   const categories = await Product.find().distinct('category');
@@ -35,16 +80,16 @@ productRouter.get('/product', async (req, res) => {
 
 productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
   const product = new Product({
-    name: 'sample name ' + Date.now(),
+    name: req.body.name,
     seller: req.user._id,
-    image: '/images/p1.jpg',
-    price: 0,
-    category: 'sample category',
-    brand: 'sample brand',
-    countInStock: 0,
+    image: req.body.image,
+    price: req.body.price,
+    category: req.body.category,
+    brand: req.body.brand,
+    countInStock: req.body.countInStock,
     rating: 0,
     numReviews: 0,
-    description: 'sample description',
+    description: req.body.description,
   });
   console.log('Created Product >>>>', product);
   const createdProduct = await product.save();
@@ -52,11 +97,11 @@ productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
 });
 
 //Can an Admin update other users' products ?
-productRouter.put('/:id', isAuth, isSeller, async (req, res) => {
+productRouter.put('/:id', isAuth, isSellerOrAdmin, async (req, res) => {
   const productId = req.params.id;
   const product = await Product.findById(productId);
   if (product) {
-    if(req.user._id == product.seller  ){
+    if (req.user._id == product.seller) {
 
       product.name = req.body.name;
       product.price = req.body.price;
@@ -72,12 +117,12 @@ productRouter.put('/:id', isAuth, isSeller, async (req, res) => {
       res.status(404).send({ message: 'Product Not Found / You can not update this product' });
     }
 
-    }
+  }
 });
 
 //make a notification sent to the admin for if user wants to delete a product
 
-productRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
+productRouter.delete('/:id', isAuth, async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (product) {
     const deleteProduct = await product.remove();
@@ -88,11 +133,14 @@ productRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
   }
 });
 
+
+
+
 productRouter.post('/:id/reviews', isAuth, async (req, res) => {
   const productId = req.params.id;
   const product = await Product.findById(productId);
   if (product) {
-    if (product.reviews.find((x) => x.name === req.user.name)) {
+    if (product.reviews.find((x) => x.name === req.body.name)) {
       return res.status(400).send({ message: 'You already submitted a review' });
     }
     //http://localhost:3000/api/products/600c838b8eb6ad2450052af9/reviews
@@ -103,11 +151,11 @@ productRouter.post('/:id/reviews', isAuth, async (req, res) => {
      "comment":"nice product"
     */
     const review = {
-      name: req.user.name,
+      name: req.body.name,
       rating: Number(req.body.rating),
       comment: req.body.comment,
     };
-    console.log('Review for product',productId, ' is', review);
+    console.log('Review for product', productId, ' is', review);
     product.reviews.push(review);
     product.numReviews = product.reviews.length;
     product.rating =
