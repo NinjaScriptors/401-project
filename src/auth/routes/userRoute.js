@@ -18,7 +18,7 @@ userRouter.post('/signin', basicAuth, isAuth, async (req, res) => {
 userRouter.post('/signup', async (req, res) => {
 
   const user = new User({
-   
+    fullName: req.body.fullName,
     name: req.body.name,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
@@ -33,6 +33,7 @@ userRouter.post('/signup', async (req, res) => {
   console.log('Created User >>>', user);
   res.send({
     _id: createdUser._id,
+    fullName: createdUser.fullName,
     name: createdUser.name,
     email: createdUser.email,
     isAdmin: createdUser.isAdmin,

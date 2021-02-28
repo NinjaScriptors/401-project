@@ -32,22 +32,22 @@ class Users extends Model {
     }
   }
 
-  // generateToken(user) {
-  //   console.log('inside getToken()');
-  //   return jwt.sign(
-  //     {
-  //       _id: user._id,
-  //       name: user.name,
-  //       email: user.email,
-  //       isAdmin: user.isAdmin,
-  //       isSeller: user.isSeller,
-  //     },
-  //     process.env.SECRET || 'somethingsecret',
-  //     {
-  //       expiresIn: '30d',
-  //     }
-  //   );
-  // }
+  generateToken(user) {
+    console.log('inside getToken()');
+    return jwt.sign(
+      {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        isSeller: user.isSeller,
+      },
+      process.env.SECRET || 'somethingsecret',
+      {
+        expiresIn: '30d',
+      }
+    );
+  }
 
   generateTokenBasic(user) {
     try{
