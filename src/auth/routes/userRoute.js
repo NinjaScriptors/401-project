@@ -9,10 +9,10 @@ const basicAuth = require('../middleware/basic-auth.js');
 
 
 userRouter.post('/signin', basicAuth, async (req, res) => {
-  const user = await User.findOne({ name: req.body.name });
+  const user = await User.findOne({ name: req.headers.Username });
   if (user) {
-  
-    if (bcrypt.compareSync(req.body.password, user.password)) {
+
+    if (bcrypt.compareSync(req.headers.Password, user.password)) {
       res.send({
         _id: user._id,
         fullName: user.fullName,
@@ -22,7 +22,7 @@ userRouter.post('/signin', basicAuth, async (req, res) => {
         isSeller: user.isSeller,
         token: generateToken(user),
       });
-      
+
       return;
     }
   }
@@ -32,21 +32,22 @@ userRouter.post('/signin', basicAuth, async (req, res) => {
 userRouter.post('/signup', async (req, res) => {
 
   const user = new User({
-   fullName: req.body.fullName,
+    fullName: req.body.fullName,
     name: req.body.name,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
     // isAdmin: req.body.isAdmin,
     // isSeller: req.body.isSeller
-  
+
   });
-  if (user.email == 'admin@herfa.com'){
+  if (user.email == 'admin@herfa.com') {
     user.isAdmin = true;
   }
   const createdUser = await user.save();
   console.log('Created User >>>', user);
   res.send({
     _id: createdUser._id,
+    fullName: createdUser.fullName,
     name: createdUser.name,
     email: createdUser.email,
     isAdmin: createdUser.isAdmin,
@@ -63,7 +64,7 @@ userRouter.post('/signup', async (req, res) => {
 //   req.session = null;
 
 //   // redirect to homepage
- 
+
 //     res.send(' Logged out Successful')
 // });
 
