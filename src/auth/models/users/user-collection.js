@@ -32,22 +32,32 @@ class Users extends Model {
     }
   }
 
-  generateToken(user) {
-    console.log('inside getToken()');
-    return jwt.sign(
-      {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isSeller: user.isSeller,
-      },
-      process.env.SECRET || 'somethingsecret',
-      {
-        expiresIn: '30d',
+  // generateToken(user) {
+  //   console.log('inside getToken()');
+  //   return jwt.sign(
+  //     {
+  //       _id: user._id,
+  //       name: user.name,
+  //       email: user.email,
+  //       isAdmin: user.isAdmin,
+  //       isSeller: user.isSeller,
+  //     },
+  //     process.env.SECRET || 'somethingsecret',
+  //     {
+  //       expiresIn: '30d',
+  //     }
+  //   );
+  // }
+
+  generateTokenBasic(user) {
+    try{
+        const token =  jwt.sign({ _id: user._id }, SECRET);
+        console.log('token in generateToken()',token);
+        return token;
+      }catch(err){
+        console.log(err);
       }
-    );
-  }
+}
 
   async authenticateBasic(user, password) {
     let userObj = await this.get({ name: user });
@@ -72,6 +82,8 @@ class Users extends Model {
       return Promise.reject(e);
     }
   }
+
+  
 
 }
 module.exports = new Users();

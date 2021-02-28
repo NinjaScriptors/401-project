@@ -2,64 +2,44 @@
 
 const express = require('express');
 const User = require('../models/users/user-schema.js');
-const users = require('../models/users/user-collection')
 const { generateToken, isAdmin, isAuth } = require('../middleware/util');
 const bcrypt = require('bcryptjs');
 const userRouter = express.Router();
 const basicAuth = require('../middleware/basic-auth.js');
 
 
-userRouter.post('/signin', basicAuth, async (req, res) => {
-  // const user = await User.findOne({ email: req.body.email });
-  // if (user) {
-
-  //   if (bcrypt.compareSync(req.body.password, user.password)) {
-  //     res.send({
-  //       _id: user._id,
-  //       name: user.name,
-  //       email: user.email,
-  //       isAdmin: user.isAdmin,
-  //       isSeller: user.isSeller,
-  //       token: generateToken(user),
-  //     });
-
-  //     return;
-  //   }
-  // }
-  res.json({ token: req.token });
-  // res.status(401).send({ message: 'Invalid email or password' });
+userRouter.post('/signin', basicAuth, isAuth, async (req, res) => {
+  console.log("header>>>", req.header);
+  res.set('token', req.token);
+  res.cookie('token', req.token);
+  res.status(200).send({ token: req.token, user: req.user });
 });
 
 userRouter.post('/signup', async (req, res) => {
 
-  console.log(req.body);
-  users.save(req.body).then((user) => {
-    const token = users.generateToken(user);
-    res.json({ user, token });
+  const user = new User({
+   
+    name: req.body.name,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 8),
+    isAdmin: req.body.isAdmin,
+    isSeller: req.body.isSeller
+  
   });
-  // const user = new User({
-
-  //   name: req.body.name,
-  //   email: req.body.email,
-  //   password: bcrypt.hashSync(req.body.password, 8),
-  //   isAdmin: req.body.isAdmin,
-  //   isSeller: req.body.isSeller
-
-  // });
-  // if (user.email == 'admin@herfa.com'){
-  //   user.isAdmin = true;
-  // }
-  // const createdUser = await user.save();
-  // console.log('Created User >>>', user);
-  // res.send({
-  //   _id: createdUser._id,
-  //   name: createdUser.name,
-  //   email: createdUser.email,
-  //   isAdmin: createdUser.isAdmin,
-  //   isSeller: user.isSeller,
-  //   token: generateToken(createdUser),
-  // });
-  // console.log('TOKEN >>>', generateToken(createdUser));
+  if (user.email == 'admin@herfa.com'){
+    user.isAdmin = true;
+  }
+  const createdUser = await user.save();
+  console.log('Created User >>>', user);
+  res.send({
+    _id: createdUser._id,
+    name: createdUser.name,
+    email: createdUser.email,
+    isAdmin: createdUser.isAdmin,
+    isSeller: user.isSeller,
+    token: generateToken(createdUser),
+  });
+  console.log('TOKEN >>>', generateToken(createdUser));
 });
 
 // userRouter.get('/signout',(req,res)=>{
@@ -69,7 +49,7 @@ userRouter.post('/signup', async (req, res) => {
 //   req.session = null;
 
 //   // redirect to homepage
-
+ 
 //     res.send(' Logged out Successful')
 // });
 
