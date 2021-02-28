@@ -9,45 +9,44 @@ const basicAuth = require('../middleware/basic-auth.js');
 
 
 userRouter.post('/signin', basicAuth, async (req, res) => {
-  const user = await User.findOne({ name: req.headers.Username });
-  if (user) {
-
-    if (bcrypt.compareSync(req.headers.Password, user.password)) {
-      res.send({
-        _id: user._id,
-        fullName: user.fullName,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isSeller: user.isSeller,
-        token: generateToken(user),
-      });
-
-      return;
-    }
-  }
-  res.status(401).send({ message: 'Invalid email or password' });
+  // const user = await User.findOne({ email: req.body.email });
+  // if (user) {
+  
+  //   if (bcrypt.compareSync(req.body.password, user.password)) {
+  //     res.send({
+  //       _id: user._id,
+  //       name: user.name,
+  //       email: user.email,
+  //       isAdmin: user.isAdmin,
+  //       isSeller: user.isSeller,
+  //       token: generateToken(user),
+  //     });
+      
+  //     return;
+  //   }
+  // }
+  res.json({token:req.token});
+  // res.status(401).send({ message: 'Invalid email or password' });
 });
 
 userRouter.post('/signup', async (req, res) => {
 
   const user = new User({
-    fullName: req.body.fullName,
+   
     name: req.body.name,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
-    // isAdmin: req.body.isAdmin,
-    // isSeller: req.body.isSeller
-
+    isAdmin: req.body.isAdmin,
+    isSeller: req.body.isSeller
+  
   });
-  if (user.email == 'admin@herfa.com') {
+  if (user.email == 'admin@herfa.com'){
     user.isAdmin = true;
   }
   const createdUser = await user.save();
   console.log('Created User >>>', user);
   res.send({
     _id: createdUser._id,
-    fullName: createdUser.fullName,
     name: createdUser.name,
     email: createdUser.email,
     isAdmin: createdUser.isAdmin,
@@ -64,7 +63,7 @@ userRouter.post('/signup', async (req, res) => {
 //   req.session = null;
 
 //   // redirect to homepage
-
+ 
 //     res.send(' Logged out Successful')
 // });
 
