@@ -5,88 +5,6 @@ const { isAdmin, isAuth, isSellerOrAdmin, isSeller } = require('../middleware/ut
 const Product = require('../models/products/product-schema.js');
 const productRouter = express.Router();
 
- 
-  productRouter.get('/', async (req, res) => {
-    const products = await Product.find({
-    })
-    res.send(products);
- 
-  })
-
-
-productRouter.get('/categories', async (req, res) => {
-  const categories = await Product.find().distinct('category');
-  res.send(categories);
-});
-
-productRouter.get('/:id', async (req, res) => {
-  const product = await Product.findById(req.params.id).populate(
-    'seller',
-    'seller.name seller.logo seller.rating seller.numReviews'
-  );
-  if (product) {
-    res.send(product);
-  } else {
-    res.status(404).send({ message: 'Product Not Found' });
-  }
-});
-
-productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
-  const product = new Product({
-    name: req.body.name ,
-    seller: req.user._id,
-    image: req.body.image,
-    price: req.body.price,
-    category: req.body.category,
-    brand: req.body.brand,
-    countInStock: req.body.countInStock,
-    rating: 0,
-    numReviews: 0,
-    description: req.body.description,
-  });
-  console.log('Created Product >>>>', product);
-  const createdProduct = await product.save();
-  res.send({ message: 'Product Created', product: createdProduct });
-});
-
-//Can an Admin update other users' products ?
-productRouter.put('/:id', isAuth, isSellerOrAdmin, async (req, res) => {
-  const productId = req.params.id;
-  const product = await Product.findById(productId);
-  if (product) {
-    if(req.user._id == product.seller  ){
-
-      product.name = req.body.name;
-      product.price = req.body.price;
-      product.image = req.body.image;
-      product.category = req.body.category;
-      product.brand = req.body.brand;
-      product.countInStock = req.body.countInStock;
-      product.description = req.body.description;
-      const updatedProduct = await product.save();
-      console.log('Updated Product >>>>', updatedProduct);
-      res.send({ message: 'Product Updated', product: updatedProduct });
-    } else {
-      res.status(404).send({ message: 'Product Not Found / You can not update this product' });
-    }
-
-    }
-});
-
-//make a notification sent to the admin for if user wants to delete a product
-
-productRouter.delete('/:id', isAuth, async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  if (product) {
-    const deleteProduct = await product.remove();
-    console.log('Deleted Product >>>>', deleteProduct);
-    res.send({ message: 'Product Deleted', product: deleteProduct });
-  } else {
-    res.status(404).send({ message: 'Product Not Found' });
-  }
-});
-
-
 productRouter.get('/search', async (req, res) => {
   const pageSize = 3;
   const page = Number(req.query.pageNumber) || 1;
@@ -129,6 +47,89 @@ productRouter.get('/search', async (req, res) => {
   res.send({ products, page, pages: Math.ceil(count / pageSize) });
 })
 
+productRouter.get('/', async (req, res) => {
+  const products = await Product.find({
+  })
+  res.send(products);
+
+})
+
+
+productRouter.get('/categories', async (req, res) => {
+  const categories = await Product.find().distinct('category');
+  res.send(categories);
+});
+
+productRouter.get('/:id', async (req, res) => {
+  const product = await Product.findById(req.params.id).populate(
+    'seller',
+    'seller.name seller.logo seller.rating seller.numReviews'
+  );
+  if (product) {
+    res.send(product);
+  } else {
+    res.status(404).send({ message: 'Product Not Found' });
+  }
+});
+
+productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
+  const product = new Product({
+    name: req.body.name,
+    seller: req.user._id,
+    image: req.body.image,
+    price: req.body.price,
+    category: req.body.category,
+    brand: req.body.brand,
+    countInStock: req.body.countInStock,
+    rating: 0,
+    numReviews: 0,
+    description: req.body.description,
+  });
+  console.log('Created Product >>>>', product);
+  const createdProduct = await product.save();
+  res.send({ message: 'Product Created', product: createdProduct });
+});
+
+//Can an Admin update other users' products ?
+productRouter.put('/:id', isAuth, isSellerOrAdmin, async (req, res) => {
+  const productId = req.params.id;
+  const product = await Product.findById(productId);
+  if (product) {
+    if (req.user._id == product.seller) {
+
+      product.name = req.body.name;
+      product.price = req.body.price;
+      product.image = req.body.image;
+      product.category = req.body.category;
+      product.brand = req.body.brand;
+      product.countInStock = req.body.countInStock;
+      product.description = req.body.description;
+      const updatedProduct = await product.save();
+      console.log('Updated Product >>>>', updatedProduct);
+      res.send({ message: 'Product Updated', product: updatedProduct });
+    } else {
+      res.status(404).send({ message: 'Product Not Found / You can not update this product' });
+    }
+
+  }
+});
+
+//make a notification sent to the admin for if user wants to delete a product
+
+productRouter.delete('/:id', isAuth, async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    const deleteProduct = await product.remove();
+    console.log('Deleted Product >>>>', deleteProduct);
+    res.send({ message: 'Product Deleted', product: deleteProduct });
+  } else {
+    res.status(404).send({ message: 'Product Not Found' });
+  }
+});
+
+
+
+
 productRouter.post('/:id/reviews', isAuth, async (req, res) => {
   const productId = req.params.id;
   const product = await Product.findById(productId);
@@ -148,7 +149,7 @@ productRouter.post('/:id/reviews', isAuth, async (req, res) => {
       rating: Number(req.body.rating),
       comment: req.body.comment,
     };
-    console.log('Review for product',productId, ' is', review);
+    console.log('Review for product', productId, ' is', review);
     product.reviews.push(review);
     product.numReviews = product.reviews.length;
     product.rating =
