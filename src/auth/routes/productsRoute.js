@@ -134,7 +134,7 @@ productRouter.post('/:id/reviews', isAuth, async (req, res) => {
   const productId = req.params.id;
   const product = await Product.findById(productId);
   if (product) {
-    if (product.reviews.find((x) => x.name === req.user.name)) {
+    if (product.reviews.find((x) => x.name === req.body.name)) {
       return res.status(400).send({ message: 'You already submitted a review' });
     }
     //http://localhost:3000/api/products/600c838b8eb6ad2450052af9/reviews
@@ -145,7 +145,7 @@ productRouter.post('/:id/reviews', isAuth, async (req, res) => {
      "comment":"nice product"
     */
     const review = {
-      name: req.user.name,
+      name: req.body.name,
       rating: Number(req.body.rating),
       comment: req.body.comment,
     };
