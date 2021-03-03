@@ -2,14 +2,15 @@
 
 const http = require("http");
 const express = require('express');
+const app = express();
 require('dotenv').config();
+const cors = require("cors");
+app.use(cors());
 const userRouter = require('./auth/routes/userRoute.js');
 const productRouter = require('./auth/routes/productsRoute.js');
-const app = express();
 const notFound = require('./middleware/404.js');
 const errorHandler = require('./middleware/500.js');
 const logger = require("morgan");
-const cors = require("cors");
 const { isAuth } = require('./auth/middleware/util')
 const fs = require('fs');
 
@@ -20,7 +21,6 @@ const fs = require('fs');
 const oauth = require('./auth/middleware/google-oauth/google');
 
 // App Level MW
-app.use(cors());
 
 // Website Files
 app.use(express.static('./auth/middleware/google-oauth/public/index'));
@@ -54,7 +54,7 @@ global.io.on('connection', WebSockets.connection)
 
 //users and products routes
 app.use(logger("dev"));
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRouter);
