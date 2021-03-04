@@ -13,7 +13,7 @@ mongoose.connect(MONGODB_URL, {
     useUnifiedTopology: true,
   })
   .then(() => {
-    server.start(4000);
+    server.start();
   })
   .catch((err) => console.log(err));
 
