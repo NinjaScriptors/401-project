@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start:server": "node index.js"
-    
+    "start:server": "node index.js",
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -41,6 +45,7 @@
     "npm": "^6.14.11",
     "path": "^0.12.7",
     "qs": "^6.9.6",
+    "serve": "^11.3.2",
     "socket.io": "^3.1.0",
     "superagent": "^6.1.0",
     "uuid": "^8.3.2"
