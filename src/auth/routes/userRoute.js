@@ -119,6 +119,7 @@ userRouter.delete('/:id', isAuth, async (req, res) => {
 userRouter.put('/:id', isAuth, async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
+    user.fullName = req.body.fullName || user.fullName;
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
     user.isSeller = Boolean(req.body.isSeller);
