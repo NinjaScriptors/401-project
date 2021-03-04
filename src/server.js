@@ -46,10 +46,7 @@ const { decode } = require('./chatApp/server/middlewares/jwt');
 const WebSockets = require("./chatApp/server/utils/WebSockets");
 
 /** Create HTTP server. */
-let sockit = require("socket.io")
-const server = http.createServer(app);
-global.io = sockit(server)
-global.io.on('connection', WebSockets.connection)
+
 
 
 
@@ -73,7 +70,16 @@ app.get('/error', (req, res) => {
 
 
 
-
+let socket = require("socket.io")
+const server = http.createServer(app);
+global.io = socket(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+global.io.on('connection', WebSockets.connection)
+app.use(logger("dev"));
 
 
 
@@ -87,6 +93,6 @@ module.exports = {
     server: server,
     start: (port) => {
         let PORT = port || process.env.PORT || 3000
-        server.listen(PORT, () => console.log("listening on port ",PORT))
+        server.listen(PORT, () => console.log("listening on port ", PORT))
     }
 };

@@ -5,6 +5,7 @@ const { CHAT_ROOM_TYPES } = require('../../../auth/models/chatRoom/chatRoom')
 const MongoClient = require('mongodb').MongoClient;
 const { users } = require('../utils/WebSockets');
 const user = require('./user');
+const { compareSync } = require('bcryptjs');
 
 async function initiateChat(userIds, type, chatInitiator) {
   try {
@@ -62,8 +63,8 @@ module.exports = {
   getRoomsByUserId: async (req, res) => {
     let userId = req.params.userId;
     const room = await ChatRoomModel.find({})
-
-    let result =room.filter(element => {
+    console.log(room)
+    let result = room.filter(element => {
       if (element.userIds.includes(userId)) return true
     })
     console.log(result)
@@ -86,7 +87,7 @@ module.exports = {
       })
       let post = await newMessage.save();
       console.log("post id >>>", post)
-      global.io.sockets.in(roomId).emit('new message', { message: post });
+      global.io.sockets.emit('new message', { message: post });
       // global.io.sockets.in(roomId).on("new message", payload=>{
       //   console.log("paylllooooaaaaadddddddd >>>",payload)
       // })
