@@ -3,9 +3,9 @@
 const http = require("http");
 const express = require('express');
 const app = express();
+require('dotenv').config();
 const cors = require("cors");
 app.use(cors());
-require('dotenv').config();
 const userRouter = require('./auth/routes/userRoute.js');
 const productRouter = require('./auth/routes/productsRoute.js');
 const notFound = require('./middleware/404.js');
