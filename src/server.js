@@ -3,9 +3,9 @@
 const http = require("http");
 const express = require('express');
 const app = express();
-require('dotenv').config();
 const cors = require("cors");
 app.use(cors());
+require('dotenv').config();
 const userRouter = require('./auth/routes/userRoute.js');
 const productRouter = require('./auth/routes/productsRoute.js');
 const notFound = require('./middleware/404.js');
@@ -51,7 +51,11 @@ global.io = require("socket.io")(server)
 global.io.on('connection', WebSockets.connection)
 
 
-
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 //users and products routes
 app.use(logger("dev"));
 // app.use(cors());
