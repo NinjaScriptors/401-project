@@ -69,7 +69,7 @@ userRouter.get('/', async (req, res) => {
   res.send(users);
 });
 
-userRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
+userRouter.delete('/:id', isAuth, async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
     //if (user.isAdmin === true)

@@ -93,7 +93,7 @@ productRouter.post('/', isAuth, isSellerOrAdmin, async (req, res) => {
 //Can an Admin update other users' products ?
 productRouter.put('/:id', isAuth, isSellerOrAdmin, async (req, res) => {
   const productId = req.params.id;
-  const product = await Product.findOne({_id:productId});
+  const product = await Product.findOne({productId});
   if (product) {
     if (req.user._id == product.seller) {
 
