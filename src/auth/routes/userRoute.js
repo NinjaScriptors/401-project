@@ -135,6 +135,7 @@ userRouter.put('/:id', isAuth, async (req, res) => {
     const updatedUser = await user.save();
     res.send({
       _id: updatedUser._id,
+      fullName: updatedUser.fullName,
       name: updatedUser.name,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
